@@ -1,8 +1,5 @@
-<%@page contentType="text/html" pageEncoding="UTF-8" %> <%@ taglib prefix="c"
-uri="http://java.sun.com/jsp/jstl/core" %> <%@ taglib prefix="form"
-uri="http://www.springframework.org/tags/form" %>
 <!DOCTYPE html>
-<html lang="en">
+<html lang="en" xmlns:th="http://www.thymeleaf.org">
   <head>
     <meta charset="utf-8" />
     <meta http-equiv="X-UA-Compatible" content="IE=edge" />
@@ -22,15 +19,17 @@ uri="http://www.springframework.org/tags/form" %>
   </head>
 
   <body class="sb-nav-fixed">
-    <jsp:include page="../layout/header.jsp" />
+    <div th:replace="~{admin/layout/header :: header}"></div>
     <div id="layoutSidenav">
-      <jsp:include page="../layout/sidebar.jsp" />
+      <div th:replace="~{admin/layout/sidebar :: sidebar}"></div>
       <div id="layoutSidenav_content">
         <main>
           <div class="container-fluid px-4">
             <h1 class="mt-4">Manage Users</h1>
             <ol class="breadcrumb mb-4">
-              <li class="breadcrumb-item"><a href="/admin">Dashboard</a></li>
+              <li class="breadcrumb-item">
+                <a th:href="@{/admin}">Dashboard</a>
+              </li>
               <li class="breadcrumb-item active">Users</li>
             </ol>
             <div class="mt-5">
@@ -38,13 +37,14 @@ uri="http://www.springframework.org/tags/form" %>
                 <div class="col-md-6 col-12 mx-auto">
                   <h3>Update a user</h3>
                   <hr />
-                  <form:form
+                  <form
                     method="post"
-                    action="/admin/user/update/${newUser.id}"
-                    modelAttribute="newUser"
+                    th:object="${newUser}"
+                    th:action="@{/admin/user/update/{id}(id=${newUser.id})}"
                   >
                     <!-- Hidden fields: ID và Email -->
-                    <form:hidden path="id" /> <form:hidden path="email" />
+                    <input type="hidden" th:field="*{id}" />
+                    <input type="hidden" th:field="*{email}" />
 
                     <!-- Email hiển thị dạng readonly -->
                     <div class="mb-3">
@@ -52,7 +52,7 @@ uri="http://www.springframework.org/tags/form" %>
                       <input
                         type="email"
                         class="form-control"
-                        value="${newUser.email}"
+                        th:field="${newUser.email}"
                         readonly
                         style="background-color: #e9ecef; cursor: not-allowed"
                       />
@@ -61,43 +61,43 @@ uri="http://www.springframework.org/tags/form" %>
                     <!-- Phone number -->
                     <div class="mb-3">
                       <label class="form-label">Phone number:</label>
-                      <form:input
+                      <input
                         type="text"
                         class="form-control"
-                        path="phone"
+                        th:field="*{phone}"
                       />
                     </div>
 
                     <!-- Full Name -->
                     <div class="mb-3">
                       <label class="form-label">Full Name:</label>
-                      <form:input
+                      <input
                         type="text"
                         class="form-control"
-                        path="fullName"
+                        th:field="*{fullName}"
                       />
                     </div>
 
                     <!-- Address -->
                     <div class="mb-3">
                       <label class="form-label">Address:</label>
-                      <form:input
+                      <input
                         type="text"
                         class="form-control"
-                        path="address"
+                        th:field="*{address}"
                       />
                     </div>
 
                     <button type="submit" class="btn btn-warning">
                       Update
                     </button>
-                  </form:form>
+                  </form>
                 </div>
               </div>
             </div>
           </div>
         </main>
-        <jsp:include page="../layout/footer.jsp" />
+        <div th:replace="~{admin/layout/footer :: footer}"></div>
       </div>
     </div>
     <script
