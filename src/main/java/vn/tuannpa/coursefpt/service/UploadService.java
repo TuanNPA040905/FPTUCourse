@@ -1,50 +1,59 @@
 package vn.tuannpa.coursefpt.service;
 
-import java.io.BufferedOutputStream;
-import java.io.File;
-import java.io.FileOutputStream;
 import java.io.IOException;
+import java.nio.file.Files;
+import java.nio.file.Path;
+import java.nio.file.Paths;
+import java.nio.file.StandardCopyOption;
 
+import org.springframework.beans.factory.annotation.Value;
 import org.springframework.stereotype.Service;
 import org.springframework.web.multipart.MultipartFile;
 
-import jakarta.servlet.ServletContext;
-
 @Service
 public class UploadService {
-    private final ServletContext servletContext;
-
-    public UploadService(ServletContext servletContext) {
-        this.servletContext = servletContext;
-    }
+    
+    @Value("${upload.path:src/main/resources/static/images}")   // inject giá trị từ application.properties
+    private String uploadPath;
 
     public String handSaveUpLoadFile(MultipartFile file, String targetFolder) {
         if(file.isEmpty()) {
-            return ""; //don't upload file
+            System.out.println("❌ File is empty!");
+            return "";
         }
 
-        //relative path: absolute path
-        String rootPath = this.servletContext.getRealPath("/resources/images");
-        String finalName = "";
         try {
-            byte[] bytes = file.getBytes();
-            File dir = new File(rootPath + File.separator + targetFolder);
-            if(!dir.exists()) {
-                dir.mkdir();
-                
-                //Create the file on server
-                finalName = System.currentTimeMillis() + "-" + file.getOriginalFilename();
-
-                File serverFile = new File(dir.getAbsolutePath() + File.separator + finalName);
-                //uuid
-
-                BufferedOutputStream stream = new BufferedOutputStream(new FileOutputStream(serverFile));
-                stream.write(bytes);
-                stream.close();
+            // Tạo đường dẫn: src/main/resources/static/images/avatar/
+            Path uploadDir = Paths.get(uploadPath, targetFolder);
+            // Paths.get() tự động xử lý dấu / hoặc \ tuỳ hệ điều hành
+            
+            System.out.println("📂 Upload path: " + uploadPath);
+            System.out.println("📁 Full directory: " + uploadDir.toAbsolutePath());
+            
+            // Tạo thư mục nếu chưa tồn tại
+            if (!Files.exists(uploadDir)) {
+                Files.createDirectories(uploadDir);
+                System.out.println("✅ Created directory: " + uploadDir.toAbsolutePath());
             }
+
+            // Tạo tên file unique
+            String finalName = System.currentTimeMillis() + "-" + file.getOriginalFilename();
+            
+            // Đường dẫn file đầy đủ
+            Path filePath = uploadDir.resolve(finalName);
+            
+            // Lưu file
+            Files.copy(file.getInputStream(), filePath, StandardCopyOption.REPLACE_EXISTING);
+            
+            System.out.println("✅ File saved: " + filePath.toAbsolutePath());
+            System.out.println("🔗 Access URL: /images/" + targetFolder + "/" + finalName);
+            
+            return finalName;
+            
         } catch(IOException e) {
+            System.out.println("❌ Error: " + e.getMessage());
             e.printStackTrace();
+            return "";
         }
-        return finalName;
     }
 }
