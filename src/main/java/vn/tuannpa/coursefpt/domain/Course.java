@@ -17,6 +17,7 @@ public class Course {
     private double price;
     private String image;
     private Boolean active;
+    private int semester;
 
     public long getId() {
         return id;
@@ -64,6 +65,14 @@ public class Course {
 
     public void setActive(Boolean active) {
         this.active = active;
+    }
+
+    public int getSemester() {
+        return semester;
+    }
+
+    public void setSemester(int semester) {
+        this.semester = semester;
     }
 
 
