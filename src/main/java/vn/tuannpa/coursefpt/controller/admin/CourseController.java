@@ -94,4 +94,6 @@ public class CourseController {
         this.courseService.handleDeleteCourse(id);
         return "redirect:/admin/course";
     }
+
+    
  }

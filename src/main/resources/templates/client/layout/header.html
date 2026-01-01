@@ -1,0 +1,53 @@
+<header class="fes-header" th:fragment="header">
+  <div class="container-fluid px-4">
+    <div class="d-flex align-items-center justify-content-between h-100">
+      <!-- Logo -->
+      <div class="fes-logo">
+        <a href="/" class="text-decoration-none text-white fw-bold fs-3">
+          <span class="text-primary">FPT</span>U
+        </a>
+      </div>
+
+      <!-- Search -->
+      <div class="fes-search mx-4 mt-2">
+        <div class="input-group">
+          <form class="d-flex" role="search">
+            <input
+              class="form-control me-2"
+              type="search"
+              placeholder="Tìm kiếm khóa học"
+              aria-label="Search"
+            />
+          </form>
+        </div>
+      </div>
+
+      <!-- Menu -->
+      <nav class="fes-nav d-flex align-items-center gap-4">
+        <a
+          href="#"
+          class="fes-link"
+          style="text-decoration: none; color: white; font-size: large"
+          >Trang chủ</a
+        >
+        <a
+          href="#"
+          class="fes-link"
+          style="text-decoration: none; color: white; font-size: large"
+          >Khoá học</a
+        >
+        <a
+          href="#"
+          class="fes-link"
+          style="text-decoration: none; color: white; font-size: large"
+          >Tin tức</a
+        >
+
+        <!-- Cart -->
+        <a href="#" class="fes-cart">
+          <i class="fas fa-shopping-cart" style="color: white; width: 50px"></i>
+        </a>
+      </nav>
+    </div>
+  </div>
+</header>

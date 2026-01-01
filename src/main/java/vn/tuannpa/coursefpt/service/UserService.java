@@ -2,6 +2,7 @@ package vn.tuannpa.coursefpt.service;
 
 import java.util.List;
 
+import org.springframework.security.crypto.password.PasswordEncoder;
 import org.springframework.stereotype.Service;
 
 import vn.tuannpa.coursefpt.domain.User;
@@ -10,10 +11,13 @@ import vn.tuannpa.coursefpt.repository.UserRepository;
 @Service
 public class UserService {
 
+    private final PasswordEncoder passwordEncoder;
+    
     private final UserRepository userRepository;
 
-    public UserService(UserRepository userRepository) {
+    public UserService(UserRepository userRepository, PasswordEncoder passwordEncoder) {
         this.userRepository = userRepository;
+        this.passwordEncoder = passwordEncoder;
     }
 
     public List<User> getAllUsers() {
@@ -31,6 +35,22 @@ public class UserService {
 
     public void handleDeleteUser(long id) {
         this.userRepository.deleteById(id);
+    }
+
+    public User getUserByName(String email, String rawPassword) {
+        User user = this.userRepository.findByEmail(email);
+        
+        System.out.println("User found: " + (user != null));
+        if(user != null) {
+            System.out.println("Raw password: " + rawPassword);
+            System.out.println("Hashed password: " + user.getPassword());
+            System.out.println("Match result: " + passwordEncoder.matches(rawPassword, user.getPassword()));
+        }
+        
+        if(user != null && passwordEncoder.matches(rawPassword, user.getPassword())) {
+            return user;
+        }
+        return null;
     }
 
     
