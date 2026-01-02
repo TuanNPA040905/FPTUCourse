@@ -10,7 +10,9 @@ import jakarta.persistence.JoinColumn;
 import jakarta.persistence.ManyToOne;
 import jakarta.persistence.OneToMany;
 import jakarta.persistence.Table;
+import jakarta.validation.constraints.Email;
 import jakarta.validation.constraints.NotNull;
+import jakarta.validation.constraints.Size;
 
 @Entity
 @Table(name="users")
@@ -21,9 +23,13 @@ public class User {
     private long id;
 
     @NotNull
+    @Email(message="Email không hợp lệ")
     private String email;
-    
+    @NotNull
+    @Size(min=2, message="Password phải có ít nhất 2 ký tự")
     private String password;
+    @NotNull
+    @Size(min=2, message="Fullname có ít nhất 2 ký tự")
     private String fullName;
     private String address;
     private String phone;

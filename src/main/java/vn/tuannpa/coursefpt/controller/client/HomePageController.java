@@ -9,12 +9,17 @@ import org.springframework.data.domain.Pageable;
 import org.springframework.security.crypto.password.PasswordEncoder;
 import org.springframework.stereotype.Controller;
 import org.springframework.ui.Model;
+import org.springframework.validation.BindingResult;
 import org.springframework.web.bind.annotation.GetMapping;
+import org.springframework.web.bind.annotation.ModelAttribute;
 import org.springframework.web.bind.annotation.PostMapping;
 import org.springframework.web.bind.annotation.RequestParam;
 
+import jakarta.validation.Valid;
 import vn.tuannpa.coursefpt.domain.Course;
+import vn.tuannpa.coursefpt.domain.Role;
 import vn.tuannpa.coursefpt.domain.User;
+import vn.tuannpa.coursefpt.domain.dto.RegisterDTO;
 import vn.tuannpa.coursefpt.service.CourseService;
 import vn.tuannpa.coursefpt.service.UserService;
 
@@ -66,4 +71,30 @@ public class HomePageController {
         model.addAttribute("courses", courses);
         return "client/course/show";
     }
+
+
+    @GetMapping("/register")
+    public String getRegisterPage(Model model) {
+        model.addAttribute("registerUser", new RegisterDTO());
+        return "client/auth/register";
+    }
+
+
+    @PostMapping("/register")
+    public String handleRegister(
+        @ModelAttribute("registerUser") @Valid RegisterDTO registerDTO, BindingResult result
+    ) {
+        if(result.hasErrors()) {
+            return "client/auth/register";
+        }
+        User newUser = this.userService.handleRegisterDTOtoUser(registerDTO);
+        String encodedPassword = passwordEncoder.encode(newUser.getPassword());
+        newUser.setPassword(encodedPassword);
+        Role role = new Role();
+        role.setId(2);
+        newUser.setRole(role);
+        this.userService.handleSaveUser(newUser);
+        return "redirect:/login";
+    }
+
 }

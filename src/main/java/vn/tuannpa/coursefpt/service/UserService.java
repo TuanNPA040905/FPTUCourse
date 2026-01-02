@@ -6,6 +6,7 @@ import org.springframework.security.crypto.password.PasswordEncoder;
 import org.springframework.stereotype.Service;
 
 import vn.tuannpa.coursefpt.domain.User;
+import vn.tuannpa.coursefpt.domain.dto.RegisterDTO;
 import vn.tuannpa.coursefpt.repository.UserRepository;
 
 @Service
@@ -37,6 +38,10 @@ public class UserService {
         this.userRepository.deleteById(id);
     }
 
+    public boolean checkEmailExist(String email) {
+        return this.userRepository.existsByEmail(email);
+    }
+
     public User getUserByName(String email, String rawPassword) {
         User user = this.userRepository.findByEmail(email);
         
@@ -52,6 +57,16 @@ public class UserService {
         }
         return null;
     }
+
+    public User handleRegisterDTOtoUser(RegisterDTO registerDTO) {
+        User newUser = new User();
+        newUser.setFullName(registerDTO.getFirstName() + " " + registerDTO.getLastName());
+        newUser.setEmail(registerDTO.getEmail());
+        newUser.setPassword(registerDTO.getPassword());
+        return newUser;
+    }
+
+
 
     
 }
