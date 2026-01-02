@@ -59,4 +59,11 @@ public class HomePageController {
             return "redirect:/login";
         }
     }
+
+    @GetMapping("/courses")
+    public String getCoursesPage(Model model) {
+        List<Course> courses = this.courseService.getAllCourses();
+        model.addAttribute("courses", courses);
+        return "client/course/show";
+    }
 }
