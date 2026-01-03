@@ -16,8 +16,6 @@ public class RegisterDTO {
     @NotBlank(message = "Email không được để trống!")
     @Email(message = "Email không hợp lệ!")
     private String email;
-    @NotBlank(message="Password không được để trống")
-    @Size(min=8, message="Password phải có ít nhất 8 ký tự")
     private String password;
     @NotBlank(message="Confirm password không được để trống")
     private String confirmPassword;

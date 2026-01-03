@@ -18,7 +18,7 @@ public class UploadService {
 
     public String handSaveUpLoadFile(MultipartFile file, String targetFolder) {
         if(file.isEmpty()) {
-            System.out.println("❌ File is empty!");
+            System.out.println("File is empty!");
             return "";
         }
 

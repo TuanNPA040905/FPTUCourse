@@ -42,6 +42,10 @@ public class UserService {
         return this.userRepository.existsByEmail(email);
     }
 
+    public User loadUserByUsername(String email) {
+        return this.userRepository.findByEmail(email);
+    }
+
     public User getUserByName(String email, String rawPassword) {
         User user = this.userRepository.findByEmail(email);
         
