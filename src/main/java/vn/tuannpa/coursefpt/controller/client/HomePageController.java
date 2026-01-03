@@ -13,7 +13,6 @@ import org.springframework.validation.BindingResult;
 import org.springframework.web.bind.annotation.GetMapping;
 import org.springframework.web.bind.annotation.ModelAttribute;
 import org.springframework.web.bind.annotation.PostMapping;
-import org.springframework.web.bind.annotation.RequestParam;
 
 import jakarta.validation.Valid;
 import vn.tuannpa.coursefpt.domain.Course;
@@ -49,20 +48,6 @@ public class HomePageController {
     @GetMapping("/login")
     public String getLoginPage(Model model) {
         return "client/auth/login";
-    }
-
-    @PostMapping("/login")
-    public String handleLogin(Model model,
-        @RequestParam("username") String username,
-        @RequestParam("password") String password
-    ) {
-        User check = this.userService.getUserByName(username, password);
-        System.out.println("CHECK: " + check);
-        if(check != null) {
-            return "redirect:/";
-        } else {
-            return "redirect:/login";
-        }
     }
 
     @GetMapping("/courses")

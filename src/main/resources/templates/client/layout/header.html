@@ -38,19 +38,35 @@
           style="text-decoration: none; color: white; font-size: large"
           >Khoá học</a
         >
+        <!-- CHƯA đăng nhập - SỬA CÚ PHÁP -->
         <a
+          sec:authorize="!isAuthenticated()"
           th:href="@{/login}"
-          class="fes-link"
-          style="text-decoration: none; color: white; font-size: large"
-          >Đăng nhập</a
+          class="text-white text-decoration-none"
         >
-
-        <i class="fas fa-user text-white fs-5"></i>
-
-        <!-- Cart -->
-        <a href="#" class="fes-cart">
-          <i class="fas fa-shopping-cart" style="color: white; width: 50px"></i>
+          Đăng nhập
         </a>
+        <div sec:authorize="isAuthenticated()" class="dropdown">
+          <button
+            class="btn btn-secondary dropdown-toggle"
+            data-bs-toggle="dropdown"
+          >
+            <i class="fas fa-user me-2"></i>
+          </button>
+          <ul class="dropdown-menu">
+            <li>
+              <span class="dropdown-item" sec:authentication="name"></span>
+            </li>
+            <li><a th:href="@{/profile}" class="dropdown-item">Hồ sơ</a></li>
+            <li>
+              <a th:href="@{/my-courses}" class="dropdown-item"
+                >Khóa học của tôi</a
+              >
+            </li>
+            <li><hr class="dropdown-divider" /></li>
+            <li><a th:href="@{/logout}" class="dropdown-item">Đăng xuất</a></li>
+          </ul>
+        </div>
       </nav>
     </div>
   </div>
