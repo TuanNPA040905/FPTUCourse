@@ -34,7 +34,7 @@ public class CourseController {
 
     @GetMapping("/admin/course/detail/{id}")
     public String getCourseDetailPage(Model model, @PathVariable long id) {
-        Course course = this.courseService.getCourseById(id);
+        Course course = this.courseService.getCourseById(id).get();
         model.addAttribute("course", course);
         return "admin/course/detail";
     }
@@ -56,14 +56,14 @@ public class CourseController {
 
     @GetMapping("/admin/course/{id}") 
     public String getDetailPageCouse(Model model, @PathVariable long id) {
-        Course course = this.courseService.getCourseById(id);
+        Course course = this.courseService.getCourseById(id).get();
         model.addAttribute("course", course);
         return "admin/course/detail";
     }
 
     @GetMapping("admin/course/update/{id}")
     public String getUpdateCoursePage(Model model, @PathVariable long id) {
-        Course course = this.courseService.getCourseById(id);
+        Course course = this.courseService.getCourseById(id).get();
         model.addAttribute("newCourse", course);
         return "admin/course/update";
     }
@@ -73,7 +73,7 @@ public class CourseController {
         @ModelAttribute("newCourse") Course newCourse,
         @PathVariable long id
     ) {
-        Course course = this.courseService.getCourseById(id);
+        Course course = this.courseService.getCourseById(id).get();
         course.setTitle(newCourse.getTitle());
         course.setDescription(newCourse.getDescription());
         course.setPrice(newCourse.getPrice());
@@ -84,7 +84,7 @@ public class CourseController {
 
     @GetMapping("admin/course/delete/{id}")
     public String getDeleteCoursePage(Model model, @PathVariable long id) {
-        Course course = this.courseService.getCourseById(id);
+        Course course = this.courseService.getCourseById(id).get();
         model.addAttribute("newCourse", course);
         return "admin/course/delete";
     }

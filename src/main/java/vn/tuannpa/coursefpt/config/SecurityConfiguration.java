@@ -82,6 +82,8 @@ public class SecurityConfiguration {
                         .maximumSessions(1)                         //Chỉ cho phép 1 session/user
                         .maxSessionsPreventsLogin(false))           //Session mới đẩy session cũ ra ngoài
             .logout(logout -> logout
+                .logoutUrl("/logout")
+                .logoutSuccessUrl("/login?logout")
                 .deleteCookies("JSESSIONID")      // Xóa cookie session
                 .invalidateHttpSession(true))     // Hủy session
             .rememberMe(r -> r.rememberMeServices(rememberMeServices()))    // Sử dụng remember me service đã config ở trên

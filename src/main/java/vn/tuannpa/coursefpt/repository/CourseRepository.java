@@ -11,9 +11,9 @@ import vn.tuannpa.coursefpt.domain.Course;
 public interface CourseRepository extends JpaRepository<Course, Long>{
     List<Course> findAll();
 
-    Course findById(long id);
 
     Course save(Course course);
 
     void deleteById(long id);
+    
 }

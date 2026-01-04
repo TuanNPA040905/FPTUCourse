@@ -75,7 +75,7 @@
       }
 
       .card img {
-        height: 250px;
+        height: 150px;
         object-fit: cover;
       }
       .fes-logo {
@@ -93,6 +93,22 @@
       .fes-search .form-control::placeholder {
         color: white !important;
         opacity: 0.8;
+      }
+
+      .card-course-description {
+        overflow: hidden;
+        text-overflow: ellipsis;
+        display: -webkit-box;
+        -webkit-line-clamp: 4; /* Số dòng hiển thị */
+        -webkit-box-orient: vertical;
+      }
+
+      .card {
+        transition: transform 0.3s ease;
+      }
+
+      .card:hover {
+        transform: scale(1.04);
       }
     </style>
   </head>
@@ -174,8 +190,7 @@
       </div>
     </div>
 
-    <!-- Fruits Shop Start-->
-    <div class="container-fluid fruite py-5">
+    <div class="container-fluid py-5">
       <div class="container py-5">
         <div class="tab-class text-center">
           <div class="row g-4">
@@ -187,7 +202,7 @@
                 <li class="nav-item">
                   <a
                     class="d-flex m-2 py-2 bg-light rounded-pill active"
-                    th:href="@{#}"
+                    th:href="@{/courses}"
                     style="text-decoration: none"
                   >
                     <span class="text-dark" style="width: 130px"
@@ -220,7 +235,7 @@
                               th:text="${course.title}"
                             ></h5>
                             <p
-                              class="card-text"
+                              class="card-text card-course-description"
                               th:text="${course.description}"
                             ></p>
                             <h5
@@ -228,14 +243,14 @@
                               th:text="${course.price} + ' VND'"
                             ></h5>
                             <form
-                              action="@{/add-course-to-cart/{id}(id=${course.id})}"
+                              th:action="@{/add-course-to-cart/{id}(id=${course.id})}"
                               method="post"
                             >
-                              <!-- <input
+                              <input
                                 type="hidden"
                                 name="${_csrf.parameterName}"
                                 value="${_csrf.token}"
-                              /> -->
+                              />
                               <button
                                 class="mx-auto btn border border-secondary rounded-pill px-3 text-primary"
                               >
