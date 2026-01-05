@@ -1,0 +1,191 @@
+<!DOCTYPE html>
+<html lang="en" xmlns:th="http://www.thymeleaf.org">
+  <head>
+    <meta charset="utf-8" />
+    <title>Confirm-Thông tin</title>
+    <meta content="width=device-width, initial-scale=1.0" name="viewport" />
+    <meta content="" name="keywords" />
+    <meta content="" name="description" />
+
+    <!-- Google Web Fonts -->
+    <link rel="preconnect" href="https://fonts.googleapis.com" />
+    <link rel="preconnect" href="https://fonts.gstatic.com" crossorigin />
+    <link
+      href="https://fonts.googleapis.com/css2?family=Open+Sans:wght@400;600&family=Raleway:wght@600;800&display=swap"
+      rel="stylesheet"
+    />
+
+    <!-- Icon Font Stylesheet -->
+    <link
+      rel="stylesheet"
+      href="https://use.fontawesome.com/releases/v5.15.4/css/all.css"
+    />
+    <link
+      href="https://cdn.jsdelivr.net/npm/bootstrap-icons@1.4.1/font/bootstrap-icons.css"
+      rel="stylesheet"
+    />
+
+    <!-- Libraries Stylesheet -->
+    <link href="/client/lib/lightbox/css/lightbox.min.css" rel="stylesheet" />
+    <link
+      href="/client/lib/owlcarousel/assets/owl.carousel.min.css"
+      rel="stylesheet"
+    />
+
+    <!-- Customized Bootstrap Stylesheet -->
+    <link href="/client/css/bootstrap.min.css" rel="stylesheet" />
+
+    <!-- Template Stylesheet -->
+    <link href="/client/css/style.css" rel="stylesheet" />
+    <style>
+      .fes-logo {
+        margin-right: 10%;
+      }
+      .fes-search {
+        margin-left: 15%;
+        width: 600px;
+      }
+      .fes-search .form-control {
+        background: #1e293b;
+        color: white !important;
+        margin-left: 10%;
+      }
+      .fes-search .form-control::placeholder {
+        color: white !important;
+        opacity: 0.8;
+      }
+    </style>
+  </head>
+
+  <body>
+    <!-- Spinner Start -->
+    <div
+      id="spinner"
+      class="show w-100 vh-100 bg-white position-fixed translate-middle top-50 start-50 d-flex align-items-center justify-content-center"
+    >
+      <div class="spinner-grow text-primary" role="status"></div>
+    </div>
+    <!-- Spinner End -->
+
+    <div th:replace="~{client/layout/header :: header}"></div>
+
+    <div class="container-fluid py-5">
+      <div class="container py-5">
+        <div class="mb-3">
+          <nav class="breadcrumb">
+            <ol class="breadcrumb">
+              <li class="breadcrumb-item"><a th:href="@{/}">Home</a></li>
+              <li class="breadcrumb-item active">Lịch sử mua hàng</li>
+            </ol>
+          </nav>
+        </div>
+
+        <div class="table-responsive">
+          <table class="table">
+            <thead>
+              <tr>
+                <td scope="col">Khóa học</td>
+                <td scope="col">Tên</td>
+                <td scope="col">Giá cả</td>
+                <td scope="col">Thành tiền</td>
+              </tr>
+            </thead>
+            <tbody>
+              <div th:if="${#lists.isEmpty(cartDetails)}">
+                <tr>
+                  <td colspan="6">Không có sản phẩm trong giỏ hàng</td>
+                </tr>
+              </div>
+              <div>
+                <tr th:each="cartDetail : ${cartDetails}">
+                  <th scope="row">
+                    <div class="d-flex align-items-center">
+                      <img
+                        th:src="@{/images/course/{img}(img = ${cartDetail.course.image})}"
+                        class="img-fluid me-5 rounded-circle"
+                        style="width: 80px; height: 80px"
+                        alt=""
+                      />
+                    </div>
+                  </th>
+                  <td>
+                    <p class="mb-0 mt-4">
+                      <a
+                        th:href="@{/course/{id}(id=${cartDetail.course.id})}"
+                        target="_blank"
+                        th:text="${cartDetail.course.title}"
+                      >
+                      </a>
+                    </p>
+                  </td>
+                  <td>
+                    <span
+                      th:text="${#numbers.formatDecimal(cartDetail.course.price, 0, 'COMMA', 0, 'POINT')}"
+                    ></span>
+                    đ
+                  </td>
+                  <td>
+                    <b
+                      ><span
+                        style="color: green"
+                        th:text="${#numbers.formatDecimal(cartDetail.course.price, 0, 'COMMA', 0, 'POINT')} + ' đ'"
+                      ></span
+                    ></b>
+                  </td>
+                </tr>
+              </div>
+            </tbody>
+          </table>
+        </div>
+        <div th:if="${not #lists.isEmpty(cartDetails)}">
+          <form th:action="@{/place-order}" method="post" th:object="${cart}">
+            <input
+              type="hidden"
+              name="${_csrf.parameterName}"
+              value="${_csrf.token}"
+            />
+            <div class="mt-5 row g-4 justify-content-start">
+              <div class="col-12 col-md-6">
+                <div class="bg-light rounded">
+                  <h5 class="mb-3 ps-4 me-4 p-2">
+                    Tổng số tiền
+                    <span
+                      style="color: green"
+                      th:text="${#numbers.formatDecimal(totalPrice, 0, 'COMMA', 0, 'POINT')} + ' đ'"
+                    ></span>
+                  </h5>
+                </div>
+                <button
+                  class="btn border-secondary rounded-pill px-4 py-3 text-primary text-uppercase mb-4 ms-4"
+                >
+                  Xác nhận thanh toán
+                </button>
+              </div>
+            </div>
+          </form>
+        </div>
+      </div>
+    </div>
+    <!-- Cart Page End -->
+
+    <div th:replace="~{client/layout/footer :: footer}"></div>
+
+    <!-- Back to Top -->
+    <a
+      href="#"
+      class="btn btn-primary border-3 border-primary rounded-circle back-to-top"
+      ><i class="fa fa-arrow-up"></i
+    ></a>
+
+    <!-- JavaScript Libraries -->
+    <script src="https://ajax.googleapis.com/ajax/libs/jquery/3.6.4/jquery.min.js"></script>
+    <script src="https://cdn.jsdelivr.net/npm/bootstrap@5.0.0/dist/js/bootstrap.bundle.min.js"></script>
+    <script src="/client/lib/easing/easing.min.js"></script>
+    <script src="/client/lib/waypoints/waypoints.min.js"></script>
+    <script src="/client/lib/lightbox/js/lightbox.min.js"></script>
+    <script src="/client/lib/owlcarousel/owl.carousel.min.js"></script>
+
+    <!-- Template Javascript -->
+    <script src="/client/js/main.js"></script>
+  </body>
+</html>

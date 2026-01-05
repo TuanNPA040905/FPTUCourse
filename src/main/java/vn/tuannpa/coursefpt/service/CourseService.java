@@ -109,8 +109,15 @@ public class CourseService {
             } else {
                 this.cartRepository.deleteById(currentCart.getId());
                 session.setAttribute("sum", 0);
-            }
+            }   
         }
+    }
 
+    public Optional<Course> getMyCourses(long id) {
+        return this.courseRepository.findById(id);
+    }
+
+    public Optional<Course> findById(long id) {
+        return this.courseRepository.findById(id);
     }
 }

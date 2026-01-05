@@ -240,7 +240,7 @@
                             ></p>
                             <h5
                               class="card-title"
-                              th:text="${course.price} + ' VND'"
+                              th:text="${#numbers.formatDecimal(course.price, 0, 'COMMA', 0, 'POINT')} + ' đ'"
                             ></h5>
                             <form
                               th:action="@{/add-course-to-cart/{id}(id=${course.id})}"
