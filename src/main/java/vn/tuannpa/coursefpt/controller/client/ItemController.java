@@ -30,6 +30,12 @@ import vn.tuannpa.coursefpt.service.OrderCourseService;
 import vn.tuannpa.coursefpt.service.OrderService;
 import vn.tuannpa.coursefpt.service.UserService;
 
+import org.springframework.web.bind.annotation.RequestParam;
+
+import vn.tuannpa.coursefpt.domain.Lesson;
+import vn.tuannpa.coursefpt.service.LessonService;
+
+
 @Controller
 public class ItemController {
 
@@ -39,6 +45,7 @@ public class ItemController {
     private final OrderCourseService orderCourseService;
     private final CartRepository cartRepository;
     private final UserService userService;
+    private final LessonService lessonService;
     
 
     public ItemController(CourseService courseService, 
@@ -46,13 +53,15 @@ public class ItemController {
         OrderCourseService orderCourseService, 
         CartRepository cartRepository, 
         CartDetailRepository cartDetailRepository,
-        UserService userService) {
+        UserService userService,
+    LessonService lessonService) {
         this.courseService = courseService;
         this.orderService = orderService;
         this.orderCourseService = orderCourseService;
         this.cartRepository = cartRepository;
         this.cartDetailRepository = cartDetailRepository;
         this.userService = userService;
+        this.lessonService = lessonService;
     }
     
     @GetMapping("/course/{id}")
@@ -189,7 +198,96 @@ public class ItemController {
         if(courses != null) {
             model.addAttribute("courses", courses);
         }
-        return "client/homepage/mycourse";
+        return "client/my-courses/mycourse";
     }
+
+    @GetMapping("/my-course/{id}")
+    public String getMethodName(Model model, 
+        @PathVariable long id,
+        HttpServletRequest request) {
+        HttpSession session = request.getSession(false);
+        Long user_id = (Long)session.getAttribute("id");
+        if(user_id == null) {
+            return "redirect:/login";
+        }
+        boolean check_permiss = this.courseService.canAccessCourse(user_id, id);
+        if(!check_permiss) {
+            return "redirect:/";
+        } 
+
+         Optional<Course> course = this.courseService.findById(id);
+        if (course.get() == null) {
+            return "redirect:/my-courses";
+        }
+
+        List<Lesson> lessons = this.courseService.getLessonsByCourseId(id);
+        model.addAttribute("lessons", lessons);
+        model.addAttribute("course", course.get());
+
+        return "client/my-courses/detail";
+
+    }
+
+    @GetMapping("/my-course/{courseId}/lesson/{lessonId}")
+public String showLesson(@PathVariable long courseId,
+                         @PathVariable long lessonId,
+                         Model model,
+                         HttpServletRequest request) {
+    // Kiểm tra đăng nhập
+    HttpSession session = request.getSession(false);
+    Long userId = (Long) session.getAttribute("id");
+    if (userId == null) {
+        return "redirect:/login";
+    }
+    
+    // Kiểm tra quyền truy cập
+    boolean checkPermission = this.courseService.canAccessCourse(userId, courseId);
+    if (!checkPermission) {
+        return "redirect:/";
+    }
+    
+    // Lấy thông tin bài giảng
+    Optional<Lesson> lessonOptional = this.lessonService.findById(lessonId);
+    if (!lessonOptional.isPresent()) {
+        return "redirect:/my-course/" + courseId;
+    }
+    Lesson lesson = lessonOptional.get();
+    
+    // Lấy thông tin khóa học
+    Optional<Course> courseOptional = this.courseService.findById(courseId);
+    if (!courseOptional.isPresent()) {
+        return "redirect:/my-courses";
+    }
+    Course course = courseOptional.get();
+    
+    // Lấy tất cả bài giảng (để hiển thị sidebar)
+    List<Lesson> allLessons = this.courseService.getLessonsByCourseId(courseId);
+    
+    // Tìm bài trước và bài sau
+    Lesson previousLesson = null;
+    Lesson nextLesson = null;
+    
+    for (int i = 0; i < allLessons.size(); i++) {
+        if (allLessons.get(i).getId() == lessonId) {
+            if (i > 0) {
+                previousLesson = allLessons.get(i - 1);
+            }
+            if (i < allLessons.size() - 1) {
+                nextLesson = allLessons.get(i + 1);
+            }
+            break;
+        }
+    }
+    
+    // Truyền data sang view
+    model.addAttribute("lesson", lesson);
+    model.addAttribute("course", course);
+    model.addAttribute("allLessons", allLessons);
+    model.addAttribute("previousLesson", previousLesson);
+    model.addAttribute("nextLesson", nextLesson);
+    
+    return "client/my-courses/lesson"; // Hoặc đường dẫn view của bạn
+}
+    
 
 }

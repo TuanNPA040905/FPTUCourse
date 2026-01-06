@@ -26,6 +26,8 @@ public class Lesson implements Serializable{
     @NotNull(message="Tiêu đề bài học không được để trống")
     private String title;
 
+    private String videoUrl;
+
     @NotBlank(message = "Nội dung bài học không được để trống")
     @Column(columnDefinition = "TEXT")
     private String content;
@@ -37,6 +39,8 @@ public class Lesson implements Serializable{
     @ManyToOne
     @JoinColumn(name="course_id")
     private Course course;
+
+    private int duration;
 
     public long getId() {
         return id;
@@ -78,6 +82,24 @@ public class Lesson implements Serializable{
         this.course = course;
     }
 
+    public String getVideoUrl() {
+        return videoUrl;
+    }
 
+    public void setVideoUrl(String videoUrl) {
+        this.videoUrl = videoUrl;
+    }
+
+    public void setDuration(int duration) {
+        this.duration = duration;
+    }
+
+    public int getDuration() {
+        return duration;
+    }
+
+
+    
+    
 
 }

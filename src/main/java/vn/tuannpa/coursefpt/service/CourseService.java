@@ -11,10 +11,14 @@ import jakarta.servlet.http.HttpSession;
 import vn.tuannpa.coursefpt.domain.Cart;
 import vn.tuannpa.coursefpt.domain.CartDetail;
 import vn.tuannpa.coursefpt.domain.Course;
+import vn.tuannpa.coursefpt.domain.Lesson;
+import vn.tuannpa.coursefpt.domain.Order;
 import vn.tuannpa.coursefpt.domain.User;
 import vn.tuannpa.coursefpt.repository.CartDetailRepository;
 import vn.tuannpa.coursefpt.repository.CartRepository;
 import vn.tuannpa.coursefpt.repository.CourseRepository;
+import vn.tuannpa.coursefpt.repository.LessonRepository;
+import vn.tuannpa.coursefpt.repository.OrderRepository;
 
 @Service
 public class CourseService {
@@ -24,12 +28,24 @@ public class CourseService {
     private final CartRepository cartRepository;
     private final CourseRepository courseRepository;
     private final UserService userService;
+    private final OrderRepository orderRepository;
+    private final OrderCourseService orderCourseService;
+    private final LessonRepository lessonRepository;
 
-    public CourseService(CourseRepository courseRepository, CartRepository cartRepository, UserService userService, CartDetailRepository cartDetailRepository) {
+    public CourseService(CourseRepository courseRepository,
+         CartRepository cartRepository,
+         UserService userService,
+        CartDetailRepository cartDetailRepository,
+        OrderRepository orderRepository,
+    OrderCourseService orderCourseService,
+LessonRepository lessonRepository) {
         this.courseRepository = courseRepository;
         this.cartRepository = cartRepository;
         this.userService = userService;
         this.cartDetailRepository = cartDetailRepository;
+        this.orderRepository = orderRepository;
+        this.orderCourseService = orderCourseService;
+        this.lessonRepository = lessonRepository;
     }
 
 
@@ -119,5 +135,26 @@ public class CourseService {
 
     public Optional<Course> findById(long id) {
         return this.courseRepository.findById(id);
+    }
+
+    public boolean canAccessCourse(long userId, long id) {
+        User user = this.userService.getUserById(userId);
+        Optional<Course> courseOptional = this.courseRepository.findById(id);
+        if(!courseOptional.isPresent()) return false;
+        if(user == null) return false;
+        List<Order> ods = this.orderRepository.getOrderByUser(user);
+        for (Order order : ods) {
+            
+            if(this.orderCourseService.findByOrderAndCourse(order, courseOptional.get()) != null) {
+                return true;
+            }
+        }
+        return false;
+    }
+
+
+    public List<Lesson> getLessonsByCourseId(long id) {
+        Optional<Course> courseOptional = this.courseRepository.findById(id);
+        return this.lessonRepository.getLessonsByCourse(courseOptional.get());
     }
 }

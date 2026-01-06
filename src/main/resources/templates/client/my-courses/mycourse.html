@@ -2,7 +2,7 @@
 <html lang="en" xmlns:th="http://www.thymeleaf.org">
   <head>
     <meta charset="utf-8" />
-    <title>Confirm-Thông tin</title>
+    <title>Khóa học của tôi</title>
     <meta content="width=device-width, initial-scale=1.0" name="viewport" />
     <meta content="" name="keywords" />
     <meta content="" name="description" />
@@ -111,7 +111,7 @@
                   <td>
                     <p class="mb-0 mt-4">
                       <a
-                        th:href="@{/course/{id}(id=${course.id})}"
+                        th:href="@{/my-course/{id}(id=${course.id})}"
                         target="_blank"
                         th:text="${course.title}"
                       >
