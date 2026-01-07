@@ -1,0 +1,93 @@
+<!DOCTYPE html>
+<html lang="en" xmlns:th="http://www.thymeleaf.org">
+  <head>
+    <meta charset="utf-8" />
+    <meta http-equiv="X-UA-Compatible" content="IE=edge" />
+    <meta
+      name="viewport"
+      content="width=device-width, initial-scale=1, shrink-to-fit=no"
+    />
+    <meta name="description" content="Hỏi Dân IT - Dự án laptopshop" />
+    <meta name="author" content="Hỏi Dân IT" />
+    <title>Detail Order</title>
+    <link href="/css/styles.css" rel="stylesheet" />
+
+    <script
+      src="https://use.fontawesome.com/releases/v6.3.0/js/all.js"
+      crossorigin="anonymous"
+    ></script>
+  </head>
+
+  <body class="sb-nav-fixed">
+    <div th:replace="~{admin/layout/header :: header}"></div>
+    <div id="layoutSidenav">
+      <div th:replace="~{admin/layout/sidebar :: sidebar}"></div>
+      <div id="layoutSidenav_content">
+        <main>
+          <div class="container-fluid px-4">
+            <h1 class="mt-4">Manage Orders</h1>
+            <ol class="breadcrumb mb-4">
+              <li class="breadcrumb-item"><a href="${/admin}">Dashboard</a></li>
+              <li class="breadcrumb-item active">Order</li>
+            </ol>
+            <div class="container mt-5">
+              <div class="row">
+                <div class="col-12 mx-auto">
+                  <div class="d-flex justify-content-between">
+                    <h3>
+                      Order detail with id = <span th:text="${id}"></span>
+                    </h3>
+                  </div>
+
+                  <hr />
+
+                  <div class="card" style="width: 60%">
+                    <div class="card-header">Order information</div>
+                    <ul class="list-group list-group-flush">
+                      <li class="list-group-item">
+                        ID: <span th:text="${order.id}"></span>
+                      </li>
+                      <li class="list-group-item">
+                        Status: <span th:text="${order.status}"></span>
+                      </li>
+                    </ul>
+                    <div th:each="course, iterStat : ${courses}">
+                      <ul>
+                        <li class="list-group-item">
+                          <span th:text="${iterStat.index + 1}"></span>
+                          . Title course:
+                          <span th:text="${course.title}"></span>
+                        </li>
+                        <li class="list-group-item">
+                          Price of course:
+                          <span
+                            th:text="${#numbers.formatDecimal(course.price, 0, 'COMMA', 0, 'POINT')} + ' đ'"
+                          ></span>
+                        </li>
+                      </ul>
+                    </div>
+                  </div>
+                  <h4 style="color: green">
+                    Total price:
+                    <span
+                      th:text="${#numbers.formatDecimal(order.total_price, 0, 'COMMA', 0, 'POINT')} + ' đ'"
+                    ></span>
+                  </h4>
+                  <a th:href="@{/admin/order}" class="btn btn-success mt-3"
+                    >Back</a
+                  >
+                </div>
+              </div>
+            </div>
+          </div>
+        </main>
+        <div th:replace="~{admin/layout/footer :: footer}"></div>
+      </div>
+    </div>
+    <script
+      src="https://cdn.jsdelivr.net/npm/bootstrap@5.2.3/dist/js/bootstrap.bundle.min.js"
+      crossorigin="anonymous"
+    ></script>
+    <script src="/js/scripts.js"></script>
+  </body>
+</html>
