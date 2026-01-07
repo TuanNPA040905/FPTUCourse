@@ -83,6 +83,37 @@
                     </tbody>
                   </table>
                 </div>
+                <nav aria-label="Page navigation example">
+                  <ul class="pagination justify-content-center">
+                    <li class="page-item">
+                      <a
+                        th:class="${(curPage) eq 1 ? 'disabled page-link' : 'page-link'}"
+                        th:href="@{/admin/course(page=${curPage - 1})}"
+                        aria-label="Previous"
+                      >
+                        <span aria-hidden="true">&laquo;</span>
+                      </a>
+                    </li>
+                    <div th:each="i : ${#numbers.sequence(1, totalPages)}">
+                      <li class="page-item">
+                        <a
+                          th:class="${(i) eq curPage ? 'active page-link' : 'page-link'}"
+                          th:href="@{/admin/course(page=${i})}"
+                          ><span th:text="${i}"></span
+                        ></a>
+                      </li>
+                    </div>
+                    <li class="page-item">
+                      <a
+                        th:class="${curPage eq totalPages ? 'disabled page-link' : 'page-link'}"
+                        th:href="@{/admin/course(page=${curPage + 1})}"
+                        aria-label="Next"
+                      >
+                        <span aria-hidden="true">&raquo;</span>
+                      </a>
+                    </li>
+                  </ul>
+                </nav>
               </div>
             </div>
           </div>

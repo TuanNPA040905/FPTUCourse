@@ -13,6 +13,7 @@ import org.springframework.validation.BindingResult;
 import org.springframework.web.bind.annotation.GetMapping;
 import org.springframework.web.bind.annotation.ModelAttribute;
 import org.springframework.web.bind.annotation.PostMapping;
+import org.springframework.web.bind.annotation.RequestParam;
 
 import jakarta.validation.Valid;
 import vn.tuannpa.coursefpt.domain.Course;
@@ -51,8 +52,12 @@ public class HomePageController {
     }
 
     @GetMapping("/courses")
-    public String getCoursesPage(Model model) {
-        List<Course> courses = this.courseService.getAllCourses();
+    public String getCoursesPage(Model model,
+        @RequestParam("page") int page
+    ) {
+        Pageable pageable = PageRequest.of(page - 1, 10);
+        Page<Course> pages = this.courseService.getAllCourses(pageable);
+        List<Course> courses = pages.getContent();
         model.addAttribute("courses", courses);
         return "client/course/show";
     }

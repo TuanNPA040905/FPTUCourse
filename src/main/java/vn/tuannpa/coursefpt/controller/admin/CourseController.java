@@ -1,7 +1,11 @@
 package vn.tuannpa.coursefpt.controller.admin;
 
 import java.util.List;
+import java.util.Optional;
 
+import org.springframework.data.domain.Page;
+import org.springframework.data.domain.PageRequest;
+import org.springframework.data.domain.Pageable;
 import org.springframework.stereotype.Controller;
 import org.springframework.ui.Model;
 import org.springframework.web.bind.annotation.GetMapping;
@@ -25,10 +29,28 @@ public class CourseController {
         this.uploadService = uploadService;
     }
 
+    
+
     @GetMapping("/admin/course")
-    public String getCoursePage(Model model) {
-        List<Course> courses = this.courseService.getAllCourses();
+    public String getCoursePage(Model model,
+        @RequestParam("page") Optional<String> pageOptional
+    ) {
+        int page = 1;
+        try {
+            if (pageOptional.isPresent()) {
+                page = Integer.parseInt(pageOptional.get());
+            }
+        } catch(Exception e) {
+            System.out.println("Lỗi to");
+        }
+
+        Pageable pageable = PageRequest.of(page - 1, 5);
+        Page<Course> pages = this.courseService.getAllCourses(pageable);
+        int totalPages = pages.getTotalPages();
+        List<Course> courses = pages.getContent();
         model.addAttribute("courses", courses);
+        model.addAttribute("totalPages", totalPages);
+        model.addAttribute("curPage", page);
         return "admin/course/show";
     }
 

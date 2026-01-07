@@ -49,8 +49,8 @@ LessonRepository lessonRepository) {
     }
 
 
-    public List<Course> getAllCourses() {
-        return this.courseRepository.findAll();
+    public Page<Course> getAllCourses(Pageable page) {
+        return this.courseRepository.findAll(page);
     }
 
     public Optional<Course> getCourseById(long id) {
