@@ -2,6 +2,7 @@ package vn.tuannpa.coursefpt.controller.client;
 
 
 import java.util.List;
+import java.util.Optional;
 
 import org.springframework.data.domain.Page;
 import org.springframework.data.domain.PageRequest;
@@ -20,6 +21,7 @@ import vn.tuannpa.coursefpt.domain.Course;
 import vn.tuannpa.coursefpt.domain.Role;
 import vn.tuannpa.coursefpt.domain.User;
 import vn.tuannpa.coursefpt.domain.dto.RegisterDTO;
+import vn.tuannpa.coursefpt.repository.CourseRepository;
 import vn.tuannpa.coursefpt.service.CourseService;
 import vn.tuannpa.coursefpt.service.UserService;
 
@@ -29,19 +31,32 @@ public class HomePageController {
     private final PasswordEncoder passwordEncoder;
     private final UserService userService;
     private final CourseService courseService;
+    private final CourseRepository courseRepository;
 
-    public HomePageController(PasswordEncoder passwordEncoder, UserService userService, CourseService courseService) {
+    public HomePageController(PasswordEncoder passwordEncoder, UserService userService, CourseService courseService, CourseRepository courseRepository) {
         this.passwordEncoder = passwordEncoder;
         this.userService = userService;
         this.courseService = courseService;
+        this.courseRepository = courseRepository;
     }
 
     @GetMapping("/")
-    public String getHomePage(Model model) {
-        Pageable pageable = PageRequest.of(0, 10);
-        Page<Course> courses = this.courseService.fetchCourses(pageable);
-        List<Course> courseList = courses.getContent();
-        model.addAttribute("courses", courseList);
+    public String getHomePage(Model model, 
+        @RequestParam("page") Optional<String> pageOptional
+    ) {
+        int page = 1;
+        try {
+            page = Integer.parseInt(pageOptional.get());
+        } catch(Exception e) {
+
+        }
+        Pageable pageable = PageRequest.of(page - 1, 8);
+        Page<Course> pages = this.courseService.getAllCourses(pageable);
+        int totalPages = pages.getTotalPages();
+        List<Course> courses = pages.getContent();
+        model.addAttribute("courses", courses);
+        model.addAttribute("totalPages", totalPages);
+        model.addAttribute("curPage", page);
         return "client/homepage/show";
     }
 
@@ -53,12 +68,21 @@ public class HomePageController {
 
     @GetMapping("/courses")
     public String getCoursesPage(Model model,
-        @RequestParam("page") int page
+        @RequestParam("page") Optional<String> pageOptional
     ) {
-        Pageable pageable = PageRequest.of(page - 1, 10);
+        int page = 1;
+        try {
+            page = Integer.parseInt(pageOptional.get());
+        } catch(Exception e) {
+
+        }
+        Pageable pageable = PageRequest.of(page - 1, 5);
         Page<Course> pages = this.courseService.getAllCourses(pageable);
+        int totalPages = pages.getTotalPages();
         List<Course> courses = pages.getContent();
         model.addAttribute("courses", courses);
+        model.addAttribute("totalPages", totalPages);
+        model.addAttribute("curPage", page);
         return "client/course/show";
     }
 
