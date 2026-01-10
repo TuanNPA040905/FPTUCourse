@@ -5,6 +5,7 @@ import java.util.Optional;
 
 import org.springframework.data.domain.Page;
 import org.springframework.data.domain.Pageable;
+import org.springframework.data.jpa.domain.Specification;
 import org.springframework.stereotype.Service;
 
 import jakarta.servlet.http.HttpSession;
@@ -65,8 +66,12 @@ LessonRepository lessonRepository) {
         this.courseRepository.deleteById(id);
     }
 
-    public Page<Course> fetchCourses(Pageable pageable) {
-        return this.courseRepository.findAll(pageable);
+    public Page<Course> fetchCourses(Pageable pageable, String name) {
+        return this.courseRepository.findAll(this.nameLike(name),pageable);
+    }
+
+    public Page<Course> fetchBySemester(Pageable pageable, int semester) {
+        return this.courseRepository.findAll(this.semesterCourse(semester), pageable);
     }
 
     public Cart fetchByUser(User user) {
@@ -157,4 +162,18 @@ LessonRepository lessonRepository) {
         Optional<Course> courseOptional = this.courseRepository.findById(id);
         return this.lessonRepository.getLessonsByCourse(courseOptional.get());
     }
+
+    private Specification<Course> nameLike(String name) {
+        return (root, query, cb) ->
+            cb.like(root.get("title"), "%" + name + "%");
+    }
+
+    private Specification<Course> semesterCourse(int semester) {
+        return (root, query, cb) -> 
+            cb.equal(root.get("semester"), semester);        
+    }
+
+    
+
+    
 }

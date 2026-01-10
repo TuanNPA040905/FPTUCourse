@@ -108,52 +108,61 @@
   });
 
   //handle filter products
-  $("#btnFilter").click(function (event) {
+  $("#btnFilter").onclick(function (event) {
     event.preventDefault();
 
-    let factoryArr = [];
-    let targetArr = [];
+    let categoryArr = [];
     let priceArr = [];
-    //factory filter
-    $("#factoryFilter .form-check-input:checked").each(function () {
-      factoryArr.push($(this).val());
+    let semesterArr = [];
+
+    // Category filter (Kĩ thuật phần mềm, Toán cao cấp, Ngôn ngữ)
+    $("#categoryFilter .form-check-input:checked").each(function () {
+      let value = $(this).val();
+
+      // Map giá trị từ checkbox sang name parameter
+      if (value === "all") {
+        categoryArr.push(""); // Kĩ thuật phần mềm
+      } else if (value === "math") {
+        categoryArr.push("Math"); // Toán cao cấp
+      } else if (value === "language") {
+        categoryArr.push("Language"); // Ngôn ngữ
+      }
     });
 
-    //target filter
-    $("#targetFilter .form-check-input:checked").each(function () {
-      targetArr.push($(this).val());
-    });
-
-    //price filter
+    // Price filter (Khóa học miễn phí)
     $("#priceFilter .form-check-input:checked").each(function () {
       priceArr.push($(this).val());
     });
 
-    //sort order
-    let sortValue = $('input[name="radio-sort"]:checked').val();
+    // Semester filter (Nền tảng, Chuyên sâu)
+    $("#semesterFilter .form-check-input:checked").each(function () {
+      semesterArr.push($(this).val());
+    });
 
     const currentUrl = new URL(window.location.href);
     const searchParams = currentUrl.searchParams;
 
     // Add or update query parameters
     searchParams.set("page", "1");
-    searchParams.set("sort", sortValue);
 
-    //reset
-    searchParams.delete("factory");
-    searchParams.delete("target");
+    // Reset các filter cũ
+    searchParams.delete("name");
     searchParams.delete("price");
+    searchParams.delete("semester");
 
-    if (factoryArr.length > 0) {
-      searchParams.set("factory", factoryArr.join(","));
+    // Thêm filter category/name
+    if (categoryArr.length > 0) {
+      searchParams.set("name", categoryArr.join(","));
     }
 
-    if (targetArr.length > 0) {
-      searchParams.set("target", targetArr.join(","));
-    }
-
+    // Thêm filter price
     if (priceArr.length > 0) {
       searchParams.set("price", priceArr.join(","));
+    }
+
+    // Thêm filter semester
+    if (semesterArr.length > 0) {
+      searchParams.set("semester", semesterArr.join(","));
     }
 
     // Update the URL and reload the page

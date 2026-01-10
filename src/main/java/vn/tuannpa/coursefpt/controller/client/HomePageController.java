@@ -68,21 +68,44 @@ public class HomePageController {
 
     @GetMapping("/courses")
     public String getCoursesPage(Model model,
-        @RequestParam("page") Optional<String> pageOptional
+        @RequestParam("page") Optional<String> pageOptional,
+        @RequestParam("name") Optional<String> nameOptional,
+        @RequestParam("semester") Optional<String> semesterOptional
     ) {
+        // Parse page number safely
         int page = 1;
-        try {
-            page = Integer.parseInt(pageOptional.get());
-        } catch(Exception e) {
-
+        if (pageOptional.isPresent()) {
+            try {
+                page = Integer.parseInt(pageOptional.get());
+            } catch(NumberFormatException e) {
+                page = 1; // fallback to page 1 if invalid
+            }
         }
+        
         Pageable pageable = PageRequest.of(page - 1, 5);
-        Page<Course> pages = this.courseService.getAllCourses(pageable);
-        int totalPages = pages.getTotalPages();
-        List<Course> courses = pages.getContent();
-        model.addAttribute("courses", courses);
-        model.addAttribute("totalPages", totalPages);
+        Page<Course> pages;
+        
+        // Apply filters based on priority
+        if (semesterOptional.isPresent()) {
+            try {
+                int semester = Integer.parseInt(semesterOptional.get());
+                pages = this.courseService.fetchBySemester(pageable, semester);
+            } catch(NumberFormatException e) {
+                pages = this.courseService.fetchCourses(pageable, "");
+            }
+            
+        } else if (nameOptional.isPresent()) {
+            
+            String name = nameOptional.get();
+            pages = this.courseService.fetchCourses(pageable, name);
+        } else {
+            pages = this.courseService.fetchCourses(pageable, "");
+        }
+        
+        model.addAttribute("courses", pages.getContent());
+        model.addAttribute("totalPages", pages.getTotalPages());
         model.addAttribute("curPage", page);
+        
         return "client/course/show";
     }
 
