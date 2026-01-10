@@ -94,6 +94,14 @@ public class ItemController {
         return "client/cart/show";
     }
 
+    @PostMapping("/add-product-from-view-detail/{id}")
+    public String handleAddCourseFromCourseDetailToCart(Model model, @PathVariable long id, HttpServletRequest request) {
+        HttpSession session = request.getSession(false);
+        String email = (String) session.getAttribute("email");
+        this.courseService.handleAddCourseToCart(email, id, session);
+        return "redirect:/";
+    }
+
     @PostMapping("/add-course-to-cart/{id}")
     public String handleAddCourseToCart(Model model, 
         @PathVariable long id,

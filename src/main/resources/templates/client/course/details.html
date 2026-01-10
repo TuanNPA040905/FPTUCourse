@@ -104,7 +104,7 @@
                   <i class="fa fa-star"></i>
                 </div>
                 <form
-                  action="/add-product-from-view-detail"
+                  th:action="@{/add-product-from-view-detail/{id}(id = ${course.id})}"
                   method="post"
                   th:object="${course}"
                 >
