@@ -66,6 +66,7 @@ public class HomePageController {
         return "client/auth/login";
     }
 
+
     @GetMapping("/courses")
     public String getCoursesPage(Model model,
         @RequestParam("page") Optional<String> pageOptional,

@@ -215,6 +215,30 @@
     );
   }
 
-  //////////////////////////
-  //handle add to cart with ajax
+  $("#searchForm").onclick("click", function (event) {
+    event.preventDefault();
+
+    const keyword = $("#searchInput").val().trim();
+
+    const currentUrl = new URL(window.location.href);
+    const searchParams = currentUrl.searchParams;
+
+    // Reset page về 1 khi search
+    searchParams.set("page", "1");
+
+    // Xóa keyword cũ
+    searchParams.delete("keyword");
+
+    // Nếu có nhập thì thêm vào URL
+    if (keyword !== "") {
+      searchParams.set("name", keyword);
+    }
+
+    // Redirect
+    window.location.href = currentUrl.toString();
+  });
+
+  // =========================
+  // Auto fill search input after reload
+  // =========================
 })(jQuery);

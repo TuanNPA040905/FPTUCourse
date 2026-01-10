@@ -402,6 +402,23 @@
           window.location.href = currentUrl.toString();
         });
       });
+      // Handle search submit (Enter)
+      $("#searchForm").on("submit", function (event) {
+        event.preventDefault();
+
+        const keyword = $("#searchInput").val().trim();
+        const currentUrl = new URL(window.location.href);
+        const searchParams = currentUrl.searchParams;
+
+        searchParams.set("page", "1");
+        searchParams.delete("keyword");
+
+        if (keyword !== "") {
+          searchParams.set("name", keyword);
+        }
+
+        window.location.href = currentUrl.toString();
+      });
     </script>
   </body>
 </html>

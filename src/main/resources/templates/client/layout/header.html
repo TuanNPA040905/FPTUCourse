@@ -11,14 +11,19 @@
       <!-- Search -->
       <div class="fes-search mx-4 mt-2">
         <div class="ms-10">
-          <form class="d-flex" role="search">
+          <form
+            class="d-flex"
+            role="search"
+            th:action="@{/courses}"
+            method="get"
+          >
             <input
               class="form-control me-2"
               type="search"
+              name="name"
               placeholder="Tìm kiếm khóa học"
               aria-label="Search"
               style="width: 100%; background: #1e293b; color: white !important"
-              !
             />
           </form>
         </div>
